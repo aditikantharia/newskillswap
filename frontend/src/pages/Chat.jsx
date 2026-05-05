@@ -30,7 +30,7 @@ const Chat = () => {
 
     useEffect(() => {
         socket.current = io('http://localhost:5000'); // Ensure this matches your server port
-        socket.current.emit('join', user.id);
+        socket.current.emit('join', user?._id || user?.id);
 
         const fetchMessages = async () => {
             try {
@@ -49,7 +49,7 @@ const Chat = () => {
         return () => {
             socket.current.disconnect();
         };
-    }, [receiverId, user.id]);
+    }, [receiverId, user?._id, user?.id]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -60,7 +60,7 @@ const Chat = () => {
         if (!text.trim()) return;
 
         socket.current.emit('sendMessage', {
-            senderId: user.id,
+            senderId: user?._id || user?.id,
             receiverId,
             text
         });
@@ -87,7 +87,7 @@ const Chat = () => {
                 {/* Messages Area */}
                 <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50/50">
                     {messages.map((msg, idx) => {
-                        const isMine = msg.sender === user.id;
+                        const isMine = msg.sender === (user?._id || user?.id);
                         return (
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}

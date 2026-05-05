@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Browse from './pages/Browse';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
+import AdminDashboard from './pages/AdminDashboard';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -45,6 +46,7 @@ function App() {
                 element={<PrivateRoute><Dashboard /></PrivateRoute>} 
               />
               <Route path="/chat/:receiverId" element={<PrivateRoute><Chat /></PrivateRoute>} />
+              <Route path="/admin" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
             </Routes>
           </main>
         </div>

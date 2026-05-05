@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { User, Mail, BookOpen, Plus, X, Save, Code, Briefcase, Globe, Clock } from 'lucide-react';
+import { User, Mail, BookOpen, Plus, X, Save, Code, Briefcase, Globe, Clock, Star, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
@@ -16,6 +16,7 @@ const Profile = () => {
     const [wantInput, setWantInput] = useState('');
     const [availability, setAvailability] = useState('');
     const [socialLinks, setSocialLinks] = useState({ github: '', linkedin: '', website: '' });
+    const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,6 +29,10 @@ const Profile = () => {
                 setSkillsWanted(res.data.skillsWanted || []);
                 setAvailability(res.data.availability || '');
                 if (res.data.socialLinks) setSocialLinks(res.data.socialLinks);
+                
+                // Fetch reviews
+                const reviewsRes = await axios.get(`/reviews/${res.data._id}`);
+                setReviews(reviewsRes.data);
             } catch (err) {
                 console.error(err);
                 toast.error('Failed to load profile');
@@ -293,6 +298,43 @@ const Profile = () => {
                                 </div>
                             </div>
 
+                        </div>
+
+                        {/* Reviews Section */}
+                        <div className="mt-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <Star className="text-amber-400 fill-amber-400" size={24} /> My Reviews ({reviews.length})
+                            </h3>
+                            
+                            {reviews.length === 0 ? (
+                                <div className="text-center py-8 bg-gray-50 rounded-xl border border-gray-100 border-dashed">
+                                    <MessageSquare className="mx-auto text-gray-300 mb-2" size={32} />
+                                    <p className="text-gray-500 font-medium">You don't have any reviews yet.</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {reviews.map((rev) => (
+                                        <div key={rev._id} className="bg-gray-50 p-5 rounded-xl border border-gray-100">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-xs">
+                                                        {rev.reviewer?.name?.charAt(0) || 'U'}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-gray-900 text-sm">{rev.reviewer?.name || 'Anonymous'}</p>
+                                                        <p className="text-[10px] text-gray-400 font-medium uppercase">{new Date(rev.createdAt).toLocaleDateString()}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">
+                                                    <Star size={12} className="text-amber-500 fill-amber-500" />
+                                                    <span className="text-xs font-bold text-amber-700">{rev.rating}/5</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-gray-600 text-sm italic">"{rev.comment}"</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </motion.div>

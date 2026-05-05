@@ -9,7 +9,7 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
     try {
         const { skill, category, language, mode, level } = req.query;
-        let query = { _id: { $ne: req.user.id } }; // Exclude current user
+        let query = { _id: { $ne: req.user.id }, isAdmin: { $ne: true } }; // Exclude current user and admins
 
         if (skill) {
             query['skillsOffered.name'] = { $regex: skill, $options: 'i' };
@@ -49,6 +49,7 @@ router.get('/matches', auth, async (req, res) => {
         // Find users who teach what I want OR want what I teach
         const matches = await User.find({
             _id: { $ne: req.user.id },
+            isAdmin: { $ne: true },
             $or: [
                 { 'skillsOffered.name': { $in: wantedSkills } },
                 { 'skillsWanted.name': { $in: offeredSkills } }

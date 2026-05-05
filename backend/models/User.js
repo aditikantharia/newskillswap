@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     category: { type: String, default: 'General' },
     language: { type: String, default: 'English' },
     mode: { type: String, enum: ['Online', 'Offline', 'Both'], default: 'Online' },
+    isAdmin: { type: Boolean, default: false },
     skillsOffered: [skillSchema],
     skillsWanted: [skillSchema],
     socialLinks: {

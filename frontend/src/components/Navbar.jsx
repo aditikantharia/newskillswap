@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Menu, X, Code, LogOut, User, LayoutDashboard, Search } from 'lucide-react';
+import { Menu, X, Code, LogOut, User, LayoutDashboard, Search, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -36,6 +36,11 @@ const Navbar = () => {
                                 <Link to="/dashboard" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors flex items-center gap-2">
                                     <LayoutDashboard size={18} /> Dashboard
                                 </Link>
+                                {user.isAdmin && (
+                                    <Link to="/admin" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors flex items-center gap-2">
+                                        <ShieldAlert size={18} /> Admin
+                                    </Link>
+                                )}
                                 <Link to="/profile" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors flex items-center gap-2">
                                     <User size={18} /> Profile
                                 </Link>
@@ -74,6 +79,9 @@ const Navbar = () => {
                                 <>
                                     <Link to="/browse" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50">Browse</Link>
                                     <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50">Dashboard</Link>
+                                    {user.isAdmin && (
+                                        <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50">Admin</Link>
+                                    )}
                                     <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50">Profile</Link>
                                     <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50">Logout</button>
                                 </>
